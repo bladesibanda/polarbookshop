@@ -1,0 +1,4 @@
+include ':microservices:catalog-service'
+include ':microservices:order-service'
+include ':spring-cloud:config-service'
+include ':spring-cloud:edge-service'
