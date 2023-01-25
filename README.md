@@ -10,6 +10,10 @@
 * Install [Kubectl](https://kubernetes.io/docs/tasks/tools/)
 * Install [Tilt](https://docs.tilt.dev/index.html)
 
+### 3. Clone this Repository
+Clone this repository and run the following commands in the root directory
+of the repository
+
 ### 2. Run with Docker Compose
 ```bash
 docker compose up
