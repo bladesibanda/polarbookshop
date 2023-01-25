@@ -10,16 +10,16 @@
 * Install [Kubectl](https://kubernetes.io/docs/tasks/tools/)
 * Install [Tilt](https://docs.tilt.dev/index.html)
 
-### 3. Clone this Repository
+### 2. Clone this Repository
 Clone this repository and run the following commands in the root directory
 of the repository
 
-### 2. Run with Docker Compose
+### 3. Run with Docker Compose
 ```bash
 docker compose up
 ```
 
-### 3. Develop with Tilt in Minikube
+### 4. Develop with Tilt in Minikube
 
 ```bash
 chmod +x ./create-k8s-cluster
