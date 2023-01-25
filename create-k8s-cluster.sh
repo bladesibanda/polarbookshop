@@ -4,9 +4,9 @@ echo "\n📦 Initializing Kubernetes cluster...\n"
 
 minikube start --driver docker --profile polar
 
-# echo "\n🔌 Enabling NGINX Ingress Controller...\n"
+ echo "\n🔌 Enabling NGINX Ingress Controller...\n"
 
-# minikube addons enable ingress --profile polar
+ minikube addons enable ingress --profile polar
 
 sleep 15
 
