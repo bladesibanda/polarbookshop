@@ -70,9 +70,10 @@ jobs:
           distribution: temurin
           java-version: 17
           cache: gradle
-      - name: Build container image
+      - name: Build container images
         run: |
           chmod +x gradlew
+          ./gradlew bootJar
           
           cd microservices/catalog-service
           docker build -t ${{ env.REGISTRY }}/${{ env.CATALOG_SERVICE_IMAGE_NAME }}:${{ env.VERSION }} .
