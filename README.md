@@ -4,11 +4,11 @@
 ---
 ## Set Up Instructions
 ### 1. Install required software
-* Install [Docker](https://www.docker.com/) 
-* Install [Docker Compose](https://docs.docker.com/compose/install/)
-* Install [Minikube](https://minikube.sigs.k8s.io/docs/start/) 
-* Install [Kubectl](https://kubernetes.io/docs/tasks/tools/)
-* Install [Tilt](https://docs.tilt.dev/index.html)
+* Install [Docker](https://external.ink?to=https://www.docker.com/) 
+* Install [Docker Compose](https://external.ink?to=https://docs.docker.com/compose/install/)
+* Install [Minikube](https://external.ink?to=https://minikube.sigs.k8s.io/docs/start/) 
+* Install [Kubectl](https://external.ink?to=https://kubernetes.io/docs/tasks/tools/)
+* Install [Tilt](https://external.ink?to=https://docs.tilt.dev/index.html)
 
 ### 2. Clone this Repository
 Clone this repository and run the following commands in the root directory
