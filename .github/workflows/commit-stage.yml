@@ -3,7 +3,10 @@ on: push
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: bladesibanda/catalog-service
+  CATALOG_SERVICE_IMAGE_NAME: bladesibanda/catalog-service
+  ORDER_SERVICE_IMAGE_NAME: bladesibanda/order-service
+  CONFIG_SERVICE_IMAGE_NAME: bladesibanda/config-service
+  EDGE_SERVICE_IMAGE_NAME: bladesibanda/edge-service
   VERSION: latest
 
 jobs:
@@ -67,27 +70,93 @@ jobs:
       - name: Build container image
         run: |
           chmod +x gradlew
-          ./gradlew bootBuildImage \
-          --imageName ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
-      - name: OCI image vulnerability scanning
+          
+          cd microservices/catalog-service
+          docker build -t ${{ env.REGISTRY }}/${{ env.CATALOG_SERVICE_IMAGE_NAME }}:${{ env.VERSION }} .
+          cd ../../
+          
+          cd microservices/order-service
+          docker build -t ${{ env.REGISTRY }}/${{ env.ORDER_SERVICE_IMAGE_NAME }}:${{ env.VERSION }} .
+          cd ../../
+          
+          cd spring-cloud/edge-service
+          docker build -t ${{ env.REGISTRY }}/${{ env.EDGE_SERVICE_IMAGE_NAME }}:${{ env.VERSION }} .
+          cd ../../
+          
+          cd spring-cloud/config-service
+          docker build -t ${{ env.REGISTRY }}/${{ env.CONFIG_SERVICE_IMAGE_NAME }}:${{ env.VERSION }} .
+          cd ../../
+
+      - name: Catalog service image vulnerability scanning
         uses: anchore/scan-action@v3
-        id: scan
+        id: scan_catalog
         with:
-          image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+          image: ${{ env.REGISTRY }}/${{ env.CATALOG_SERVICE_IMAGE_NAME }}:${{ env.VERSION }}
           fail-build: false
           severity-cutoff: high
           acs-report-enable: true
-      - name: Upload vulnerability report
+
+      - name: Upload catalog service image vulnerability report
         uses: github/codeql-action/upload-sarif@v2
         if: success() || failure()
         with:
-          sarif_file: ${{ steps.scan.outputs.sarif }}
+          sarif_file: ${{ steps.scan_catalog.outputs.sarif }}
+
+      - name: Order service image vulnerability scanning
+        uses: anchore/scan-action@v3
+        id: scan_order
+        with:
+          image: ${{ env.REGISTRY }}/${{ env.ORDER_SERVICE_IMAGE_NAME }}:${{ env.VERSION }}
+          fail-build: false
+          severity-cutoff: high
+          acs-report-enable: true
+
+      - name: Upload order service image vulnerability report
+        uses: github/codeql-action/upload-sarif@v2
+        if: success() || failure()
+        with:
+          sarif_file: ${{ steps.scan_order.outputs.sarif }}
+
+      - name: Config service image vulnerability scanning
+        uses: anchore/scan-action@v3
+        id: scan_config
+        with:
+          image: ${{ env.REGISTRY }}/${{ env.CONFIG_SERVICE_IMAGE_NAME }}:${{ env.VERSION }}
+          fail-build: false
+          severity-cutoff: high
+          acs-report-enable: true
+
+      - name: Upload config service image vulnerability report
+        uses: github/codeql-action/upload-sarif@v2
+        if: success() || failure()
+        with:
+          sarif_file: ${{ steps.scan_config.outputs.sarif }}
+
+      - name: Edge service image vulnerability scanning
+        uses: anchore/scan-action@v3
+        id: scan_edge
+        with:
+          image: ${{ env.REGISTRY }}/${{ env.EDGE_SERVICE_IMAGE_NAME }}:${{ env.VERSION }}
+          fail-build: false
+          severity-cutoff: high
+          acs-report-enable: true
+
+      - name: Upload edge service image vulnerability report
+        uses: github/codeql-action/upload-sarif@v2
+        if: success() || failure()
+        with:
+          sarif_file: ${{ steps.scan_edge.outputs.sarif }}
+
       - name: Log into container registry
         uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Publish container image
-        run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+      - name: Publish container images
+        run: docker push ${{ env.REGISTRY }}/${{ env.CATALOG_SERVICE_IMAGE_NAME }}:${{ env.VERSION }} &&
+              docker push ${{ env.REGISTRY }}/${{ env.ORDER_SERVICE_IMAGE_NAME }}:${{ env.VERSION }} &&
+                docker push ${{ env.REGISTRY }}/${{ env.CONFIG_SERVICE_IMAGE_NAME }}:${{ env.VERSION }} &&
+                  docker push ${{ env.REGISTRY }}/${{ env.EDGE_SERVICE_IMAGE_NAME }}:${{ env.VERSION }}
+
 
